@@ -1,0 +1,56 @@
+#login v1 ini setup
+services:
+  zitadel:
+    restart: unless-stopped
+    image: ghcr.io/zitadel/zitadel:latest
+    command: >
+      start-from-init
+      --masterkey "${ZITADEL_MASTERKEY}"
+      --tlsMode external
+      --config /current-dir/zitadel-secrets.yaml
+      --steps /current-dir/zitadel-init-steps.yaml
+    environment:
+      # Public URL (because users come via NPM HTTPS)
+      ZITADEL_EXTERNALDOMAIN: auth.peejaytech.com
+      ZITADEL_EXTERNALPORT: "443"
+      ZITADEL_EXTERNALSECURE: "true"
+
+      # External Postgres
+      ZITADEL_DATABASE_POSTGRES_HOST: pjt-db2
+      ZITADEL_DATABASE_POSTGRES_PORT: "5432"
+      ZITADEL_DATABASE_POSTGRES_DATABASE: zitadel
+      ZITADEL_DATABASE_POSTGRES_SSL_MODE: require
+
+      # Fresh install needs admin privileges for setup/migrations
+      #setup in secrets file
+
+      # Runtime user (can exist already)
+      #setup in secrets file
+
+      # Write the Login V2 service-user PAT to this file (shared volume)
+      ZITADEL_FIRSTINSTANCE_LOGINCLIENTPATPATH: /current-dir/login-client.pat
+      ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED: "false"
+
+      # (Optional) set your initial human admin explicitly (recommended)
+      #set up in init-setp file
+
+      # Enable Login V2 and set its public base URI (proxied by NPM)
+      ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_REQUIRED: "false"
+
+#    healthcheck:
+#      test: ["CMD", "wget", "-qO-", "http://localhost:8080/debug/healthz"]
+#      interval: 10s
+#      timeout: 60s
+#      retries: 10
+#      start_period: 20s
+
+    user: "0"
+    volumes:
+      - .:/current-dir:delegated
+    ports:
+      - "8080:8080"
+    networks:
+      - zitadel
+
+networks:
+  zitadel:
