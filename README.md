@@ -116,6 +116,12 @@ It must print **32**.
 ## Step 2 — Reverse proxy (must exist before you go public)
 
 Your proxy must forward to ZITADEL and (later) the Login V2 container.
+### http forward to zitadel IP and port 8080
+#### Custom Locations
+  Location: /ui/v2/login
+    http to zitadel ip and port 3000
+  Location:/ui/v2/login/_next
+    http to zitadel ip and port 3000
 
 Recommended headers:
 
