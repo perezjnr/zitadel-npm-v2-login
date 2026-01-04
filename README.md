@@ -116,16 +116,17 @@ It must print **32**.
 ## Step 2 — Reverse proxy (must exist before you go public)
 
 Your proxy must forward to ZITADEL and (later) the Login V2 container.
-### Details: Scheme=> *http* forward host => *zitadel IP* Forward Port *8080*
+### Details: Scheme=> *http* | forward host => *zitadel IP* | Forward Port *8080*
 ---
 ### Custom Locations
+--
 #### Custom Location 1
-  ##### Location: /ui/v2/login
-  ##### http to zitadel ip and port 3000
+  ##### Location: */ui/v2/login*
+  ##### *http* | *zitadel ip* | port *3000*
 #### Custom Location 2
-  ##### Location:/ui/v2/login/_next
-  ##### http to zitadel ip and port 3000
-
+  ##### Location:*/ui/v2/login/_next*
+  ##### *http* | *zitadel ip* | port *3000*
+--
 Recommended headers:
 
 ```nginx
